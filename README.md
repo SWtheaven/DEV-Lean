@@ -19,9 +19,9 @@ O repositório `SWtheaven/DEV-Lean` concentra o desenvolvimento de produtos.
 
 ## Produtos
 
-### MONETIZAÇÃO-002 — LucronomIA Fechou
+### MONETIZAÇÃO-002 — LucronomIA Confirma
 
-Status técnico: **V0 implementada / checkout real pendente de configuração**.
+Status técnico: **V0 funcional em hardening/QA / checkout real pendente de configuração**.
 
 Promessa:
 
@@ -32,7 +32,7 @@ Escopo V0:
 - landing mobile-first;
 - formulário do serviço já combinado;
 - resumo profissional;
-- checkout externo configurável;
+- checkout externo via **Mercado Pago — Link de Pagamento**;
 - PDF client-side;
 - mensagem pronta para WhatsApp;
 - sem login;
@@ -40,18 +40,18 @@ Escopo V0:
 - sem IA;
 - sem backend obrigatório.
 
-Código: [`products/fechou/`](products/fechou/)
+Código: [`products/confirma/`](products/confirma/)
 
-Documentação: [`docs/MONETIZACAO-002-FECHOU-V0.md`](docs/MONETIZACAO-002-FECHOU-V0.md)
+Documentação: [`docs/MONETIZACAO-002-CONFIRMA-V0.md`](docs/MONETIZACAO-002-CONFIRMA-V0.md)
 
 ## Estrutura
 
 ```text
 .
 ├── docs/
-│   └── MONETIZACAO-002-FECHOU-V0.md
+│   └── MONETIZACAO-002-CONFIRMA-V0.md
 ├── products/
-│   └── fechou/
+│   └── confirma/
 │       ├── app.js
 │       ├── config.js
 │       ├── index.html
@@ -63,6 +63,7 @@ Documentação: [`docs/MONETIZACAO-002-FECHOU-V0.md`](docs/MONETIZACAO-002-FECHO
 ## Segurança
 
 - não versionar tokens, segredos, chaves privadas ou credenciais;
-- checkout deve ser configurado apenas com URL pública HTTPS do provedor;
+- checkout deve ser configurado apenas com URL pública HTTPS do Mercado Pago;
 - nenhuma credencial financeira deve entrar no frontend;
+- não implementar API de pagamento, billing próprio ou assinatura na V0;
 - custo zero ou free tier é preferido enquanto houver solução tecnicamente adequada.
