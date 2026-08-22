@@ -7,6 +7,7 @@ const MP_ACCESS_TOKEN = Deno.env.get("MP_ACCESS_TOKEN") || "";
 const MP_WEBHOOK_SECRET = Deno.env.get("MP_WEBHOOK_SECRET") || "";
 const supabase = createClient(SUPABASE_URL, SERVICE_ROLE_KEY, { auth: { persistSession: false } });
 const encoder = new TextEncoder();
+const ASSET_BASE = "https://cdn.jsdelivr.net/gh/SWtheaven/DEV-Lean@f33b414b77f2ba63ffb17bfca98fca3aff8da8ff/supabase/functions/confirma/public";
 
 const jsonHeaders = { "content-type": "application/json; charset=utf-8", "cache-control": "no-store" };
 const securityHeaders = { "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "permissions-policy": "camera=(), microphone=(), geolocation=()" };
@@ -55,7 +56,9 @@ async function validateMpSignature(req: Request, url: URL) {
   return constantTimeEqual(await hmacHex(MP_WEBHOOK_SECRET, manifest), v1);
 }
 async function readAsset(name: string) {
-  return await Deno.readTextFile(new URL(`./public/${name}`, import.meta.url));
+  const response = await fetch(`${ASSET_BASE}/${name}`, { headers: { "user-agent": "LucronomIA-Confirma/0.1" } });
+  if (!response.ok) throw new Error(`ASSET_FETCH_FAILED:${name}:${response.status}`);
+  return await response.text();
 }
 
 Deno.serve(async (req: Request) => {
@@ -71,30 +74,21 @@ Deno.serve(async (req: Request) => {
     if (req.method === "GET" && path === "/app.js") return text(await readAsset("app.js"), "application/javascript; charset=utf-8");
 
     if (req.method === "GET" && path === "/api/packages") {
-      const { data, error } = await supabase
-        .from("confirma_packages")
-        .select("code,label,credits,price_cents,description,recommended,sort_order,static_checkout_url")
-        .eq("active", true)
-        .order("sort_order");
+      const { data, error } = await supabase.from("confirma_packages").select("code,label,credits,price_cents,description,recommended,sort_order,static_checkout_url").eq("active", true).order("sort_order");
       if (error) throw error;
       return json({ packages: data });
     }
-
     if (req.method === "POST" && path === "/api/wallet") {
-      const tokenBytes = crypto.getRandomValues(new Uint8Array(32));
-      const token = b64url(tokenBytes);
-      const hash = await sha256Hex(token);
-      const { data, error } = await supabase.from("confirma_wallets").insert({ access_token_hash: hash }).select("id,balance,created_at").single();
+      const token = b64url(crypto.getRandomValues(new Uint8Array(32)));
+      const { data, error } = await supabase.from("confirma_wallets").insert({ access_token_hash: await sha256Hex(token) }).select("id,balance,created_at").single();
       if (error) throw error;
       return json({ wallet: data, access_token: token }, 201);
     }
-
     if (req.method === "GET" && path === "/api/wallet") {
       const wallet = await walletFromRequest(req);
       if (!wallet) return json({ error: "WALLET_UNAUTHORIZED" }, 401);
       return json({ wallet });
     }
-
     if (req.method === "POST" && path === "/api/checkout") {
       const wallet = await walletFromRequest(req);
       if (!wallet) return json({ error: "WALLET_UNAUTHORIZED" }, 401);
@@ -107,19 +101,8 @@ Deno.serve(async (req: Request) => {
       if (orderError) throw orderError;
       const returnUrl = `${SUPABASE_URL}${root}/?payment_return=1&order=${order.id}`;
       const notificationUrl = `${SUPABASE_URL}${root}/api/webhook`;
-      const preferencePayload = {
-        items: [{ id: pkg.code, title: `LucronomIA Confirma — ${pkg.label}`, description: pkg.description, quantity: 1, currency_id: "BRL", unit_price: pkg.price_cents / 100 }],
-        external_reference: order.id,
-        back_urls: { success: returnUrl, pending: returnUrl, failure: returnUrl },
-        auto_return: "approved",
-        notification_url: notificationUrl,
-        metadata: { package_code: pkg.code, order_id: order.id }
-      };
-      const mp = await fetch("https://api.mercadopago.com/checkout/preferences", {
-        method: "POST",
-        headers: { authorization: `Bearer ${MP_ACCESS_TOKEN}`, "content-type": "application/json", "x-idempotency-key": order.id },
-        body: JSON.stringify(preferencePayload)
-      });
+      const preferencePayload = { items: [{ id: pkg.code, title: `LucronomIA Confirma — ${pkg.label}`, description: pkg.description, quantity: 1, currency_id: "BRL", unit_price: pkg.price_cents / 100 }], external_reference: order.id, back_urls: { success: returnUrl, pending: returnUrl, failure: returnUrl }, auto_return: "approved", notification_url: notificationUrl, metadata: { package_code: pkg.code, order_id: order.id } };
+      const mp = await fetch("https://api.mercadopago.com/checkout/preferences", { method: "POST", headers: { authorization: `Bearer ${MP_ACCESS_TOKEN}`, "content-type": "application/json", "x-idempotency-key": order.id }, body: JSON.stringify(preferencePayload) });
       const mpData = await mp.json().catch(() => ({}));
       if (!mp.ok || !mpData.id || !mpData.init_point) {
         await supabase.from("confirma_orders").update({ status: "cancelled", updated_at: new Date().toISOString() }).eq("id", order.id);
@@ -129,7 +112,6 @@ Deno.serve(async (req: Request) => {
       await supabase.from("confirma_events").insert({ wallet_id: wallet.id, event_name: "payment_started", properties: { order_id: order.id, package_code: pkg.code } });
       return json({ order_id: order.id, checkout_url: mpData.init_point, package: pkg });
     }
-
     if (req.method === "GET" && path === "/api/payment-status") {
       const wallet = await walletFromRequest(req);
       if (!wallet) return json({ error: "WALLET_UNAUTHORIZED" }, 401);
@@ -139,7 +121,6 @@ Deno.serve(async (req: Request) => {
       const { data: freshWallet } = await supabase.from("confirma_wallets").select("balance").eq("id", wallet.id).single();
       return json({ order, balance: freshWallet?.balance ?? wallet.balance });
     }
-
     if (req.method === "POST" && path === "/api/finalize") {
       const wallet = await walletFromRequest(req);
       if (!wallet) return json({ error: "WALLET_UNAUTHORIZED" }, 401);
@@ -156,7 +137,6 @@ Deno.serve(async (req: Request) => {
       await supabase.from("confirma_events").insert({ wallet_id: wallet.id, event_name: "confirmation_finalized", properties: { confirmation_id: result?.confirmation_id, consumed: result?.consumed, balance: result?.balance } });
       return json(result || {});
     }
-
     if (req.method === "GET" && path.startsWith("/api/confirmation/")) {
       const wallet = await walletFromRequest(req);
       if (!wallet) return json({ error: "WALLET_UNAUTHORIZED" }, 401);
@@ -165,7 +145,6 @@ Deno.serve(async (req: Request) => {
       if (!data) return json({ error: "CONFIRMATION_NOT_FOUND" }, 404);
       return json({ confirmation: data });
     }
-
     if (req.method === "POST" && path === "/api/event") {
       const wallet = await walletFromRequest(req);
       const body = await req.json().catch(() => ({}));
@@ -174,7 +153,6 @@ Deno.serve(async (req: Request) => {
       await supabase.from("confirma_events").insert({ wallet_id: wallet?.id || null, event_name: eventName, properties: body.properties && typeof body.properties === "object" ? body.properties : {} });
       return new Response(null, { status: 204 });
     }
-
     if (req.method === "POST" && path === "/api/webhook") {
       if (!MP_ACCESS_TOKEN || !MP_WEBHOOK_SECRET) return json({ error: "MP_NOT_CONFIGURED" }, 503);
       if (!(await validateMpSignature(req, url))) return json({ error: "INVALID_WEBHOOK_SIGNATURE" }, 401);
@@ -200,14 +178,10 @@ Deno.serve(async (req: Request) => {
       if (error) throw error;
       const result = data?.[0];
       if (result?.applied) {
-        await supabase.from("confirma_events").insert([
-          { wallet_id: order.wallet_id, event_name: "payment_approved", properties: { order_id: order.id, payment_id: paymentId, package_code: order.package_code } },
-          { wallet_id: order.wallet_id, event_name: "credits_added", properties: { order_id: order.id, credits: result.credits_added, balance: result.balance } }
-        ]);
+        await supabase.from("confirma_events").insert([{ wallet_id: order.wallet_id, event_name: "payment_approved", properties: { order_id: order.id, payment_id: paymentId, package_code: order.package_code } }, { wallet_id: order.wallet_id, event_name: "credits_added", properties: { order_id: order.id, credits: result.credits_added, balance: result.balance } }]);
       }
       return json({ ok: true, ...result });
     }
-
     return json({ error: "NOT_FOUND" }, 404);
   } catch (error) {
     console.error(error);
