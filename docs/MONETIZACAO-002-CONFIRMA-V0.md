@@ -1,6 +1,6 @@
 # MONETIZAÇÃO-002 — LucronomIA Confirma V0
 
-Status: **GO V0 / hardening e QA**
+Status: **GO V0 / hardening e QA — checkout configurado**
 
 Nome anterior: **LucronomIA Fechou**. Renomeado em 2026-08-22 antes de READY FOR SALES.
 
@@ -42,6 +42,10 @@ Provider decidido: **Mercado Pago — Link de Pagamento**.
 
 Preço: **R$ 9,90 pagamento único**.
 
+URL configurada em 2026-08-22:
+
+`https://mpago.la/1RjBkzr`
+
 Não implementar nesta V0:
 
 - API de pagamentos;
@@ -49,8 +53,6 @@ Não implementar nesta V0:
 - assinatura;
 - planos;
 - webhook apenas para justificar arquitetura mais complexa antes da validação.
-
-Para ativar vendas, preencher `checkoutUrl` em `products/confirma/config.js` com a URL HTTPS real do Link de Pagamento Mercado Pago.
 
 A aplicação não contém token de pagamento nem credencial privada.
 
@@ -80,7 +82,7 @@ Os eventos são mantidos localmente no navegador e enviados para `window.dataLay
 
 A V0 só pode receber status **READY FOR SALES** após:
 
-1. URL HTTPS real do Link de Pagamento Mercado Pago de R$ 9,90 configurada;
+1. URL HTTPS real do Link de Pagamento Mercado Pago de R$ 9,90 configurada — **concluído**;
 2. pagamento real de teste concluído e comprovado no Mercado Pago;
 3. retorno ao produto validado após checkout;
 4. PDF gerado e aberto corretamente em dispositivo real;
