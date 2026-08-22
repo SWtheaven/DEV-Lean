@@ -62,7 +62,9 @@ Deno.serve(async (req: Request) => {
   try {
     const url = new URL(req.url);
     const root = "/functions/v1/confirma";
-    const path = url.pathname.startsWith(root) ? url.pathname.slice(root.length) || "/" : url.pathname;
+    const routeMarker = "/confirma";
+    const markerIndex = url.pathname.indexOf(routeMarker);
+    const path = markerIndex >= 0 ? url.pathname.slice(markerIndex + routeMarker.length) || "/" : url.pathname;
 
     if (req.method === "GET" && (path === "/" || path === "/index.html")) return text(await readAsset("index.html"), "text/html; charset=utf-8");
     if (req.method === "GET" && path === "/styles.css") return text(await readAsset("styles.css"), "text/css; charset=utf-8");
