@@ -69,7 +69,11 @@ Deno.serve(async (req: Request) => {
     if (req.method === "GET" && path === "/app.js") return text(await readAsset("app.js"), "application/javascript; charset=utf-8");
 
     if (req.method === "GET" && path === "/api/packages") {
-      const { data, error } = await supabase.from("confirma_packages").select("code,label,credits,price_cents,description,recommended,sort_order").eq("active", true).order("sort_order");
+      const { data, error } = await supabase
+        .from("confirma_packages")
+        .select("code,label,credits,price_cents,description,recommended,sort_order,static_checkout_url")
+        .eq("active", true)
+        .order("sort_order");
       if (error) throw error;
       return json({ packages: data });
     }
@@ -95,7 +99,7 @@ Deno.serve(async (req: Request) => {
       if (!MP_ACCESS_TOKEN) return json({ error: "MP_NOT_CONFIGURED", message: "Mercado Pago server credentials are pending." }, 503);
       const body = await req.json().catch(() => ({}));
       const packageCode = String(body.package_code || "");
-      const { data: pkg } = await supabase.from("confirma_packages").select("code,label,credits,price_cents,description").eq("code", packageCode).eq("active", true).maybeSingle();
+      const { data: pkg } = await supabase.from("confirma_packages").select("code,label,credits,price_cents,description,static_checkout_url").eq("code", packageCode).eq("active", true).maybeSingle();
       if (!pkg) return json({ error: "INVALID_PACKAGE" }, 400);
       const { data: order, error: orderError } = await supabase.from("confirma_orders").insert({ wallet_id: wallet.id, package_code: pkg.code, expected_price_cents: pkg.price_cents, expected_credits: pkg.credits }).select("id").single();
       if (orderError) throw orderError;
