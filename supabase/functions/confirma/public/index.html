@@ -1,1 +1,83 @@
-<!doctype html><html lang="pt-BR"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover"><meta name="theme-color" content="#08100d"><title>LucronomIA Confirma</title><link rel="stylesheet" href="styles.css"><script defer src="app.js"></script></head><body><header><div class="brand">Lucronom<span>IA</span> <b>Confirma</b></div><div id="wallet-pill" class="pill">Saldo: —</div></header><main><section class="hero"><p class="eyebrow">SERVIÇO JÁ COMBINADO</p><h1>Combinou pelo WhatsApp? <span>Organize e confirme em 30 segundos.</span></h1><p>Prévia grátis. Você só usa 1 confirmação quando finaliza um novo documento.</p><button data-start class="primary">Organizar meu combinado</button></section><section class="packages"><h2>Escolha seu pacote</h2><p>Pagamento único. Sem mensalidade. Créditos não expiram.</p><div id="packages" class="package-grid"></div></section><section id="form-section" class="card"><h2>Seu combinado</h2><form id="deal-form"><div class="grid"><label>Prestador<input name="providerName" required maxlength="100"></label><label>Cliente<input name="clientName" required maxlength="100"></label><label class="full">Serviço combinado<input name="service" required maxlength="180"></label><label>Valor combinado<input name="amount" required inputmode="decimal" maxlength="30"></label><label>Data ou prazo<input name="deadline" required maxlength="100"></label><label class="full">Forma de pagamento<input name="paymentMethod" required maxlength="180"></label><label>Entrada / sinal <small>opcional</small><input name="deposit" maxlength="120"></label><label class="full">Detalhes adicionais <small>opcional</small><textarea name="details" maxlength="1200"></textarea></label><label class="full">Observações <small>opcional</small><textarea name="notes" maxlength="800"></textarea></label></div><button class="primary" type="submit">Gerar prévia grátis</button><p id="form-error" class="error"></p></form></section><section id="preview" class="card" hidden><h2>Prévia</h2><article id="document" class="document"></article><div class="actions"><button id="edit" class="secondary">Editar</button><button id="finalize" class="primary">Finalizar confirmação</button></div><p id="finalize-status"></p></section><section id="purchase" class="card" hidden><h2>Você precisa de confirmações</h2><p>Escolha um pacote. O documento só será finalizado depois que o pagamento for aprovado e houver saldo.</p><div id="purchase-packages" class="package-grid"></div></section><section id="delivery" class="card" hidden><h2>Confirmação finalizada</h2><p id="balance-message"></p><div class="actions"><button id="pdf" class="primary">Baixar PDF</button><button id="whatsapp" class="whatsapp">Abrir no WhatsApp</button><button id="new-doc" class="secondary">Nova confirmação</button></div></section></main><footer>Organização do combinado; não é serviço jurídico nem promessa de validade jurídica automática.</footer></body></html>
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#08100d">
+  <title>LucronomIA Confirma</title>
+  <link rel="stylesheet" href="styles.css">
+  <script defer src="app.js"></script>
+</head>
+<body>
+  <header>
+    <div class="brand">Lucronom<span>IA</span> <b>Confirma</b></div>
+    <div class="actions">
+      <div id="wallet-pill" class="pill">Saldo: —</div>
+      <button id="copy-access" class="secondary" type="button">Copiar acesso</button>
+    </div>
+  </header>
+  <main>
+    <section class="hero">
+      <p class="eyebrow">SERVIÇO JÁ COMBINADO</p>
+      <h1>Combinou pelo WhatsApp? <span>Organize e confirme em 30 segundos.</span></h1>
+      <p>Prévia grátis. Você só usa 1 confirmação quando finaliza um novo documento.</p>
+      <button data-start class="primary">Organizar meu combinado</button>
+    </section>
+
+    <section class="packages">
+      <h2>Escolha seu pacote</h2>
+      <p>Pagamento único. Sem mensalidade. Créditos não expiram.</p>
+      <div id="packages" class="package-grid"></div>
+    </section>
+
+    <section id="form-section" class="card">
+      <h2>Seu combinado</h2>
+      <form id="deal-form">
+        <div class="grid">
+          <label>Prestador<input name="providerName" required maxlength="100"></label>
+          <label>Cliente<input name="clientName" required maxlength="100"></label>
+          <label class="full">Serviço combinado<input name="service" required maxlength="180"></label>
+          <label>Valor combinado<input name="amount" required inputmode="decimal" maxlength="30"></label>
+          <label>Data ou prazo<input name="deadline" required maxlength="100"></label>
+          <label class="full">Forma de pagamento<input name="paymentMethod" required maxlength="180"></label>
+          <label>Entrada / sinal <small>opcional</small><input name="deposit" maxlength="120"></label>
+          <label class="full">Detalhes adicionais <small>opcional</small><textarea name="details" maxlength="1200"></textarea></label>
+          <label class="full">Observações <small>opcional</small><textarea name="notes" maxlength="800"></textarea></label>
+        </div>
+        <button class="primary" type="submit">Gerar prévia grátis</button>
+        <p id="form-error" class="error"></p>
+      </form>
+    </section>
+
+    <section id="preview" class="card" hidden>
+      <h2>Prévia</h2>
+      <article id="document" class="document"></article>
+      <div class="actions">
+        <button id="edit" class="secondary">Editar</button>
+        <button id="finalize" class="primary">Finalizar confirmação</button>
+      </div>
+      <p id="finalize-status"></p>
+    </section>
+
+    <section id="purchase" class="card" hidden>
+      <h2>Você precisa de confirmações</h2>
+      <p>Escolha um pacote. O documento só será finalizado depois que o pagamento for aprovado e houver saldo.</p>
+      <div id="purchase-packages" class="package-grid"></div>
+    </section>
+
+    <section id="delivery" class="card" hidden>
+      <h2>Confirmação finalizada</h2>
+      <p id="balance-message"></p>
+      <div class="actions">
+        <button id="pdf" class="primary">Baixar PDF</button>
+        <button id="whatsapp" class="whatsapp">Abrir no WhatsApp</button>
+        <button id="new-doc" class="secondary">Nova confirmação</button>
+      </div>
+    </section>
+  </main>
+  <footer>
+    Organização do combinado; não é serviço jurídico nem promessa de validade jurídica automática.
+    O link de acesso à carteira funciona como uma chave: guarde-o e não compartilhe com terceiros.
+  </footer>
+</body>
+</html>
