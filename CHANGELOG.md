@@ -7,7 +7,7 @@ Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 ### Added
 
 - definição do `SWtheaven/DEV-Lean` como repositório canônico de desenvolvimento de produtos;
-- migração da MONETIZAÇÃO-002 — LucronomIA Fechou V0;
+- migração da MONETIZAÇÃO-002 para o repositório DEV Lean;
 - landing mobile-first;
 - formulário e resumo profissional;
 - PDF client-side;
@@ -16,6 +16,13 @@ Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 - instrumentação mínima da jornada;
 - documentação técnica da V0.
 
+### Changed
+
+- produto renomeado de **LucronomIA Fechou** para **LucronomIA Confirma** antes de READY FOR SALES;
+- diretório canônico alterado para `products/confirma/`;
+- provider V0 de checkout definido como **Mercado Pago — Link de Pagamento**;
+- preço mantido em **R$ 9,90 pagamento único**.
+
 ### Architecture
 
 - frontend estático;
@@ -23,9 +30,13 @@ Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 - sem autenticação;
 - sem IA;
 - sem backend obrigatório;
+- sem API de pagamentos, billing próprio ou assinatura;
 - infraestrutura incremental alvo de R$ 0.
 
 ### Pending
 
-- configuração de URL HTTPS real do checkout de R$ 9,90;
-- validação end-to-end do pagamento real antes de liberar aquisição comercial.
+- configuração da URL HTTPS real do Link de Pagamento Mercado Pago de R$ 9,90;
+- smoke test end-to-end do pagamento real;
+- teste de PDF e WhatsApp em dispositivo real;
+- conclusão do QA de responsividade e textos;
+- somente após isso classificar como READY FOR SALES.
