@@ -21,7 +21,8 @@ Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 - produto renomeado de **LucronomIA Fechou** para **LucronomIA Confirma** antes de READY FOR SALES;
 - diretório canônico alterado para `products/confirma/`;
 - provider V0 de checkout definido como **Mercado Pago — Link de Pagamento**;
-- preço mantido em **R$ 9,90 pagamento único**.
+- preço mantido em **R$ 9,90 pagamento único**;
+- URL HTTPS real do checkout configurada em `products/confirma/config.js`.
 
 ### Architecture
 
@@ -35,7 +36,6 @@ Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 
 ### Pending
 
-- configuração da URL HTTPS real do Link de Pagamento Mercado Pago de R$ 9,90;
 - smoke test end-to-end do pagamento real;
 - teste de PDF e WhatsApp em dispositivo real;
 - conclusão do QA de responsividade e textos;
