@@ -33,7 +33,9 @@ Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 - links estáticos `mpago.la` passam a ser metadados oficiais dos pacotes, mas não são considerados prova de pagamento nem fonte de crédito automático;
 - checkout automático continua exigindo pedido interno + preferência Mercado Pago dinâmica para vincular wallet/pedido/pacote com segurança;
 - runtime canônico movido para `supabase/functions/confirma/`;
-- código estático pré-créditos removido de `products/confirma/` para evitar duas fontes de verdade.
+- código estático pré-créditos removido de `products/confirma/` para evitar duas fontes de verdade;
+- normalização de rota da Edge Function corrigida para aceitar tanto pathname completo do gateway quanto pathname já recortado pelo runtime Supabase;
+- Edge Function `confirma` redeployada como versão 6 com assets estáticos incluídos.
 
 #### QA
 
@@ -46,14 +48,27 @@ Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 - pacote de 20 acumulado sobre saldo 3 → 23: aprovado;
 - pacote de 50 → saldo 50: aprovado;
 - manipulação client-side de quantidade ignorada pelo servidor: aprovado;
-- mapeamento dos três links Mercado Pago conferido diretamente no PostgreSQL.
+- mapeamento dos três links Mercado Pago conferido diretamente no PostgreSQL;
+- smoke interno Supabase: `POST /api/wallet` → HTTP 201;
+- smoke interno Supabase: `GET /api/packages` → HTTP 200 com 3 pacotes;
+- smoke interno Supabase: `POST /api/checkout` para `PACKAGE_5` → HTTP 200;
+- preferência real Mercado Pago criada com checkout em `www.mercadopago.com.br`;
+- pedido de smoke persistido como `PACKAGE_5`, `990` centavos, `5` créditos, status `pending`, com preferência do provider vinculada;
+- `MP_ACCESS_TOKEN` confirmado carregado e válido por criação real de preferência;
+- `MP_WEBHOOK_SECRET` confirmado carregado: assinatura propositalmente inválida foi rejeitada com HTTP 401 `INVALID_WEBHOOK_SIGNATURE`;
+- extensão PostgreSQL `http` foi habilitada somente para QA interno e removida após o teste.
 
 #### Pending
 
-- configurar `MP_ACCESS_TOKEN` como secret da Edge Function;
-- configurar `MP_WEBHOOK_SECRET` como secret da Edge Function;
-- configurar/validar Webhook de pagamentos no Mercado Pago;
-- smoke test HTTP externo do runtime em dispositivo real;
-- compra real de R$9,90;
-- PDF e WhatsApp em dispositivo real;
-- somente após isso avaliar `READY FOR REAL PURCHASE TEST` / `READY FOR SALES` conforme gates de governança.
+- compra real deliberada de R$9,90;
+- confirmação de webhook real `payment approved`;
+- validação de crédito real `0 → 5`;
+- finalização de um documento real `5 → 4`;
+- PDF em dispositivo real;
+- WhatsApp em dispositivo real;
+- fechar/reabrir e confirmar persistência do saldo em `4`;
+- somente após isso liberar `READY FOR SALES`.
+
+#### Gate atual
+
+`READY FOR REAL PURCHASE TEST`
