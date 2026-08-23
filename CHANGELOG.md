@@ -2,6 +2,28 @@
 
 Mudanças relevantes de produtos e baseline técnica do DEV Lean.
 
+## 2026-08-23
+
+### MONETIZAÇÃO-002 — LucronomIA Confirma
+
+#### Changed
+
+- PDF final redesenhado com hierarquia comercial profissional, mantendo o documento como `resumo do combinado`, não orçamento ou contrato;
+- A4 com margens consistentes, cabeçalho compacto, referência da confirmação e data de geração;
+- serviço acordado passa a ser o título principal do documento;
+- prestador e cliente separados em blocos de identificação;
+- valor, forma de pagamento e prazo reunidos em faixa de leitura rápida;
+- entrada/sinal, detalhes e observações recebem hierarquia própria;
+- rodapé contém branding, paginação e disclaimer jurídico limitado;
+- renderer dedicado adicionado em `supabase/functions/confirma/public/pdf-professional.js`, substituindo apenas a ação de download do PDF sem alterar wallet, checkout, créditos ou finalização.
+
+#### QA
+
+- PDF de exemplo renderizado em A4 sem clipping, sobreposição ou caracteres quebrados;
+- cenário normal validado em 1 página;
+- cenário de texto longo validado em 2 páginas com cabeçalho de continuação e rodapé preservados;
+- `pdf-professional.js` publicado via GitHub Pages e validado com HTTP 200.
+
 ## 2026-08-22
 
 ### MONETIZAÇÃO-002 — LucronomIA Confirma
