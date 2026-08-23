@@ -35,6 +35,7 @@ jobs:
           cp supabase/functions/confirma/public/index.html _site/confirma/index.html
           cp supabase/functions/confirma/public/styles.css _site/confirma/styles.css
           cp supabase/functions/confirma/public/app.js _site/confirma/app.js
+          cp supabase/functions/confirma/public/pdf-professional.js _site/confirma/pdf-professional.js
           sed -i 's|const API = "api";|const API = "https://jxuazdoflabqerkccevi.supabase.co/functions/v1/confirma/api";|' _site/confirma/app.js
           touch _site/.nojekyll
 
