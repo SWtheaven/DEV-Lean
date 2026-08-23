@@ -6,6 +6,7 @@
   <meta name="theme-color" content="#08100d">
   <title>LucronomIA Confirma</title>
   <link rel="stylesheet" href="styles.css">
+  <script defer src="form-enhancements.js"></script>
   <script defer src="app.js"></script>
   <script defer src="pdf-professional.js"></script>
 </head>
@@ -35,13 +36,37 @@
       <h2>Seu combinado</h2>
       <form id="deal-form">
         <div class="grid">
-          <label>Prestador<input name="providerName" required maxlength="100"></label>
-          <label>Cliente<input name="clientName" required maxlength="100"></label>
-          <label class="full">Serviço combinado<input name="service" required maxlength="180"></label>
-          <label>Valor combinado<input name="amount" required inputmode="decimal" maxlength="30"></label>
-          <label>Data ou prazo<input name="deadline" required maxlength="100"></label>
-          <label class="full">Forma de pagamento<input name="paymentMethod" required maxlength="180"></label>
-          <label>Entrada / sinal <small>opcional</small><input name="deposit" maxlength="120"></label>
+          <label>Prestador<input name="providerName" required maxlength="100" autocomplete="name"></label>
+          <label>Cliente<input name="clientName" required maxlength="100" autocomplete="off"></label>
+          <label class="full">Serviço combinado<input name="service" required maxlength="180" autocomplete="off"></label>
+
+          <label>
+            Valor combinado
+            <span class="input-prefix">
+              <span aria-hidden="true">R$</span>
+              <input name="amountRaw" required inputmode="decimal" maxlength="24" placeholder="0,00" autocomplete="off" aria-label="Valor combinado em reais">
+            </span>
+            <input name="amount" type="hidden" value="">
+          </label>
+
+          <label>
+            Data do combinado
+            <input name="deadlineRaw" type="date" required aria-label="Data do combinado">
+            <input name="deadline" type="hidden" value="">
+          </label>
+
+          <label class="full">
+            Forma de pagamento
+            <select name="paymentMethod" required>
+              <option value="" selected disabled>Selecione a forma de pagamento</option>
+              <option value="Dinheiro">Dinheiro</option>
+              <option value="Pix">Pix</option>
+              <option value="Cartão de crédito">Cartão de crédito</option>
+              <option value="Cartão de débito">Cartão de débito</option>
+            </select>
+          </label>
+
+          <label>Entrada / sinal <small>opcional</small><input name="deposit" maxlength="120" placeholder="Ex.: R$ 200,00 ou 30%" autocomplete="off"></label>
           <label class="full">Detalhes adicionais <small>opcional</small><textarea name="details" maxlength="1200"></textarea></label>
           <label class="full">Observações <small>opcional</small><textarea name="notes" maxlength="800"></textarea></label>
         </div>
