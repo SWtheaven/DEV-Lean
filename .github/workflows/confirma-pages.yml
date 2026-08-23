@@ -49,3 +49,5 @@ jobs:
       - name: Deploy to GitHub Pages
         id: deployment
         uses: actions/deploy-pages@v4
+
+# Triggered after GitHub Pages was enabled for the repository.
